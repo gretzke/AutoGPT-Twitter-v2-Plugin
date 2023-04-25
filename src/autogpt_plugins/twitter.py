@@ -6,6 +6,14 @@ import json
 plugin = AutoGPTTwitter()
 
 
+def get_home_timeline(number_of_tweets: int, exclude_replies: bool = True) -> str:
+
+    tweets = plugin.client.get_home_timeline(
+        exclude=["retweets", "replies"], expansions=["author_id"], tweet_fields=["created_at", "public_metrics", "author_id"], user_fields=["username"], max_results=number_of_tweets, user_auth=True)
+    print(tweets)
+    return _parse_result(tweets)
+
+
 def get_my_tweets(number_of_tweets: int, exclude_retweets: bool) -> str:
     user_id = plugin.client.get_me(user_auth=True)["data"]["id"]
     return _get_tweets_for_user(user_id, number_of_tweets, exclude_retweets)
@@ -35,6 +43,10 @@ def _get_tweets_for_user(user_id: str, number_of_tweets: int, exclude_retweets: 
     tweets = plugin.client.get_users_tweets(
         user_id, expansions=["author_id"], tweet_fields=["created_at", "public_metrics", "author_id"], user_fields=["username"], max_results=number_of_tweets, exclude="retweets" if exclude_retweets else None, user_auth=True)
 
+    return _parse_result(tweets)
+
+
+def _parse_result(tweets) -> str:
     # Create a dictionary to map user IDs to usernames
     user_id_to_username = {}
     for user in tweets["includes"]["users"]:

@@ -219,7 +219,7 @@ class AutoGPTTwitter(AutoGPTPluginTemplate):
             PromptGenerator: The prompt generator.
         """
         from .twitter import (
-            get_my_tweets, get_user_tweets)
+            get_my_tweets, get_user_tweets, get_home_timeline)
 
         prompt.add_command(
             "get_my_tweets",
@@ -235,6 +235,13 @@ class AutoGPTTwitter(AutoGPTPluginTemplate):
             {"username": "<target_username>", "number_of_tweets": "<number_of_tweets",
                 "exclude_retweets": "<exclude_retweets>"},
             get_user_tweets,
+        )
+
+        prompt.add_command(
+            "get_home_timeline",
+            "Get home timeline",
+            {"number_of_tweets": "<number_of_tweets"},
+            get_home_timeline
         )
 
         return prompt
